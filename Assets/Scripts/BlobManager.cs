@@ -23,8 +23,12 @@ public class BlobManager : MonoBehaviour
     Vector2 pixelUV;
     Vector2 pixelPoint;
 
+    Vector3 startPos;
+
     private void Start()
     {
+        startPos = transform.position;
+
         pivot = GameObject.Find("Pivot");
         rb = GetComponent<Rigidbody>();
 
@@ -63,8 +67,29 @@ public class BlobManager : MonoBehaviour
 
     private void OnMouseUp()
     {
-        CalculateRadius();
-        StartPainting();
+        if (ShouldSpawn())
+        {
+            CalculateRadius();
+            StartPainting();
+        }
+        else
+        {
+            transform.position = startPos;
+        }
+    }
+
+    bool ShouldSpawn()
+    {
+        RaycastHit hit;
+
+        if(Physics.Raycast(transform.position, Vector3.forward, out hit))
+        {
+            if (hit.collider.CompareTag("Pivot"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     void StopPainting()
@@ -78,6 +103,7 @@ public class BlobManager : MonoBehaviour
 
         }
     }
+
     void StartPainting()
     {
         if (!painting)
