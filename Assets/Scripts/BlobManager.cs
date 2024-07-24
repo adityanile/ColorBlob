@@ -27,8 +27,6 @@ public class BlobManager : MonoBehaviour
 
     private void Start()
     {
-        startPos = transform.position;
-
         pivot = GameObject.Find("Pivot");
         rb = GetComponent<Rigidbody>();
 
@@ -40,12 +38,11 @@ public class BlobManager : MonoBehaviour
     {
         if (painting)
         {
-            float m1 = 100;
-            float m2 = rb.mass;
+            //float m1 = 100;
+            //float m2 = rb.mass;
 
-            float force = (6.67f * m1 * m2) / Mathf.Pow(radius, 2);
-            transform.RotateAround(pivot.transform.position, Vector3.forward, force * Time.deltaTime);
-
+            //float force = (6.67f * m1 * m2) / Mathf.Pow(radius, 2);
+            //transform.RotateAround(pivot.transform.position, Vector3.forward, force * Time.deltaTime);
             Paint();
         }
     }
@@ -69,8 +66,10 @@ public class BlobManager : MonoBehaviour
     {
         if (ShouldSpawn())
         {
-            CalculateRadius();
             StartPainting();
+
+            var movement = GetComponent<TriagleMotion>();
+            movement.Init();
         }
         else
         {
@@ -129,11 +128,4 @@ public class BlobManager : MonoBehaviour
             pm.PaintObject.DrawPoint(pixelPoint);
         }
     }
-
-    void CalculateRadius()
-    {
-        Vector3 dir = (pivot.transform.position - transform.position);
-        radius = dir.magnitude;
-    }
-
 }
