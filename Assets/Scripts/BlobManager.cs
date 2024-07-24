@@ -67,7 +67,7 @@ public class BlobManager : MonoBehaviour
 
     private void OnMouseUp()
     {
-        if (ShouldSpawn())
+        if (ShouldSpawn(transform.position))
         {
             StartPainting();
             motion.InitMotion();
@@ -78,11 +78,11 @@ public class BlobManager : MonoBehaviour
         }
     }
 
-    bool ShouldSpawn()
+    public bool ShouldSpawn(Vector3 pos)
     {
         RaycastHit hit;
 
-        if(Physics.Raycast(transform.position, Vector3.forward, out hit))
+        if (Physics.Raycast(pos, Vector3.forward, out hit))
         {
             if (hit.collider.CompareTag("Pivot"))
             {
@@ -98,8 +98,8 @@ public class BlobManager : MonoBehaviour
         {
             painting = false;
 
-            if(pm)
-               pm.PaintObject.FinishPainting();
+            if (pm)
+                pm.PaintObject.FinishPainting();
 
         }
     }

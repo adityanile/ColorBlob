@@ -16,15 +16,28 @@ public class Motion : MonoBehaviour
     public bool move = false;
     private bool circularMotion = false;
 
+    // Wave Utilitites
+    private float amplitude = 2f;
+    private float velocity = 1f;
+    private float wavelength = 5f;
+
+    private float zOffset = -1f;
+    private BlobManager blobManager;
+    private bool repeat = false;
+
     // Control which Motion to init according to the selected shape
     public void InitMotion()
     {
-        pivot = GameObject.Find("Pivot");
+        zOffset = transform.position.z;
 
-        InitTriangle();
+        pivot = GameObject.Find("Pivot");
+        blobManager = GetComponent<BlobManager>();
+
+        //InitTriangle();
         //InitSquare();
         //InitRectangle();
 
+        InitWave();
         //InitCircle();
     }
 
@@ -35,6 +48,35 @@ public class Motion : MonoBehaviour
             positions.Clear();
             move = false;
         }
+    }
+
+    void InitWave()
+    {
+        positions = new List<Vector3>();
+        step = 0;
+
+        repeat = true;
+
+        float time = 0;
+
+        Vector3 startPos = transform.position;
+        positions.Add(startPos);
+
+        float x = startPos.x;
+        float y = startPos.y;
+
+        while (blobManager.ShouldSpawn(positions[positions.Count - 1]))
+        {
+            y = startPos.y + amplitude * Mathf.Sin((2 * Mathf.PI * (x - velocity * time)) / wavelength);
+
+            Vector3 pos = new Vector3(x, y, zOffset);
+            positions.Add(pos);
+
+            time += Time.fixedDeltaTime;
+            x += 0.1f;
+        }
+
+        move = true;
     }
 
     void InitCircle()
@@ -51,6 +93,9 @@ public class Motion : MonoBehaviour
     void InitRectangle()
     {
         positions.Clear();
+        step = 0;
+
+        repeat = false;
 
         Vector3 dir = (pivot.transform.position - transform.position);
         radius = dir.magnitude;
@@ -117,10 +162,9 @@ public class Motion : MonoBehaviour
             }
         }
 
-
-        Vector3 end1 = new Vector3(x1, y1, 0);
-        Vector3 end2 = new Vector3(x2, y2, 0);
-        Vector2 end3 = new Vector3(x3, y3, 0);
+        Vector3 end1 = new Vector3(x1, y1, zOffset);
+        Vector3 end2 = new Vector3(x2, y2, zOffset);
+        Vector2 end3 = new Vector3(x3, y3, zOffset);
 
         positions.Add(end2);
         positions.Add(end3);
@@ -131,6 +175,9 @@ public class Motion : MonoBehaviour
     void InitSquare()
     {
         positions.Clear();
+        step = 0;
+
+        repeat = false;
 
         Vector3 dir = (pivot.transform.position - transform.position);
         radius = dir.magnitude;
@@ -200,9 +247,9 @@ public class Motion : MonoBehaviour
         }
 
 
-        Vector3 end1 = new Vector3(x1, y1, 0);
-        Vector3 end2 = new Vector3(x2, y2, 0);
-        Vector2 end3 = new Vector3(x3, y3, 0);
+        Vector3 end1 = new Vector3(x1, y1, zOffset);
+        Vector3 end2 = new Vector3(x2, y2, zOffset);
+        Vector2 end3 = new Vector3(x3, y3, zOffset);
 
         positions.Add(end2);
         positions.Add(end3);
@@ -214,6 +261,9 @@ public class Motion : MonoBehaviour
     void InitTriangle()
     {
         positions.Clear();
+        step = 0;
+
+        repeat = false;
 
         Vector3 dir = (pivot.transform.position - transform.position);
         radius = dir.magnitude;
@@ -266,8 +316,8 @@ public class Motion : MonoBehaviour
             }
         }
 
-        Vector3 end1 = new Vector3(x1, y1, 0);
-        Vector3 end2 = new Vector3(x2, y2, 0);
+        Vector3 end1 = new Vector3(x1, y1, zOffset);
+        Vector3 end2 = new Vector3(x2, y2, zOffset);
 
         positions.Add(end2);
         positions.Add(end1);
@@ -293,6 +343,15 @@ public class Motion : MonoBehaviour
                 else
                 {
                     step++;
+                }
+
+                // It repeation motion is active
+                if (repeat)
+                {
+                    if (step % positions.Count == 0)
+                    {
+                        positions.Reverse();
+                    }
                 }
             }
             else
