@@ -25,8 +25,12 @@ public class BlobManager : MonoBehaviour
 
     Vector3 startPos;
 
+    private Motion motion;
+
     private void Start()
     {
+        startPos = transform.position;
+
         pivot = GameObject.Find("Pivot");
         rb = GetComponent<Rigidbody>();
 
@@ -38,17 +42,16 @@ public class BlobManager : MonoBehaviour
     {
         if (painting)
         {
-            //float m1 = 100;
-            //float m2 = rb.mass;
-
-            //float force = (6.67f * m1 * m2) / Mathf.Pow(radius, 2);
-            //transform.RotateAround(pivot.transform.position, Vector3.forward, force * Time.deltaTime);
             Paint();
         }
     }
 
     void OnMouseDown()
     {
+        if (!motion)
+            motion = GetComponent<Motion>();
+
+        motion.StopMotion();
         StopPainting();
 
         screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
@@ -67,9 +70,7 @@ public class BlobManager : MonoBehaviour
         if (ShouldSpawn())
         {
             StartPainting();
-
-            var movement = GetComponent<TriagleMotion>();
-            movement.Init();
+            motion.InitMotion();
         }
         else
         {
