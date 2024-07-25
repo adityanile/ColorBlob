@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Pivot
+  - Triangle
+  - Square
+  - Rectangle
+  - Circle
+  - Wave
   layers:
   - Default
   - TransparentFX

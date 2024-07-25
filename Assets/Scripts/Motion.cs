@@ -26,19 +26,31 @@ public class Motion : MonoBehaviour
     private bool repeat = false;
 
     // Control which Motion to init according to the selected shape
-    public void InitMotion()
+    private void Start()
     {
         zOffset = transform.position.z;
 
         pivot = GameObject.Find("Pivot");
         blobManager = GetComponent<BlobManager>();
+    }
 
-        //InitTriangle();
-        //InitSquare();
-        //InitRectangle();
+    public void InitMotion()
+    {
+        if (CompareTag("Circle"))
+            InitCircle();
 
-        InitWave();
-        //InitCircle();
+        if (CompareTag("Square"))
+            InitSquare();
+
+        if (CompareTag("Rectangle"))
+            InitRectangle();
+
+        if (CompareTag("Triangle"))
+            InitTriangle();
+
+        if (CompareTag("Wave"))
+            InitWave();
+  
     }
 
     public void StopMotion()
@@ -47,10 +59,11 @@ public class Motion : MonoBehaviour
         {
             positions.Clear();
             move = false;
+            circularMotion = false;
         }
     }
 
-    void InitWave()
+    public void InitWave()
     {
         positions = new List<Vector3>();
         step = 0;
@@ -79,7 +92,7 @@ public class Motion : MonoBehaviour
         move = true;
     }
 
-    void InitCircle()
+    public void InitCircle()
     {
         positions.Clear();
 
@@ -90,7 +103,7 @@ public class Motion : MonoBehaviour
         move = true;
     }
 
-    void InitRectangle()
+    public void InitRectangle()
     {
         positions.Clear();
         step = 0;
@@ -172,7 +185,7 @@ public class Motion : MonoBehaviour
 
         move = true;
     }
-    void InitSquare()
+    public void InitSquare()
     {
         positions.Clear();
         step = 0;
@@ -258,7 +271,7 @@ public class Motion : MonoBehaviour
         move = true;
     }
 
-    void InitTriangle()
+    public void InitTriangle()
     {
         positions.Clear();
         step = 0;

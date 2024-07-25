@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using XDPaint;
 
 public class BlobManager : MonoBehaviour
@@ -16,12 +17,9 @@ public class BlobManager : MonoBehaviour
     private float radius = 0;
     public PaintManager pm;
 
+    [SerializeField]
     private Renderer mioRenderer;
     Texture2D texture;
-
-    RaycastHit hit;
-    Vector2 pixelUV;
-    Vector2 pixelPoint;
 
     Vector3 startPos;
 
@@ -44,12 +42,19 @@ public class BlobManager : MonoBehaviour
         {
             Paint();
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(0);
+        }
     }
 
-    void OnMouseDown()
+    public void OnMouseDown()
     {
         if (!motion)
             motion = GetComponent<Motion>();
+
+        Spawner.current = motion;
 
         motion.StopMotion();
         StopPainting();
@@ -65,7 +70,7 @@ public class BlobManager : MonoBehaviour
         transform.position = curPosition;
     }
 
-    private void OnMouseUp()
+    public void OnMouseUp()
     {
         if (ShouldSpawn(transform.position))
         {
@@ -117,6 +122,10 @@ public class BlobManager : MonoBehaviour
 
     void Paint()
     {
+        RaycastHit hit;
+        Vector2 pixelUV = new();
+        Vector2 pixelPoint = new();
+
         if (Physics.Raycast(transform.position, Vector3.forward, out hit))
         {
             pixelUV = hit.textureCoord;
